@@ -1,0 +1,70 @@
+{
+    "version": "0",
+    "id": "XXYZ",
+    "detail-type": "AWS API Call via CloudTrail",
+    "source": "aws.s3",
+    "account": "XXYZ",
+    "time": "2019-12-06T05:49:33Z",
+    "region": "ap-southeast-1",
+    "resources": [],
+    "detail": {
+      "eventVersion": "1.05",
+      "userIdentity": {
+        "type": "IAMUser",
+        "principalId": "XXYZ",
+        "arn": "arn:aws:iam::XXYZ:user/XXYZ",
+        "accountId": "XXYZ",
+        "accessKeyId": "XXYZ",
+        "userName": "XXYZ",
+        "sessionContext": {
+          "attributes": {
+            "creationDate": "2019-12-06T05:23:45Z",
+            "mfaAuthenticated": "true"
+          }
+        },
+        "invokedBy": "signin.amazonaws.com"
+      },
+      "eventTime": "2019-12-06T05:49:33Z",
+      "eventSource": "s3.amazonaws.com",
+      "eventName": "PutObject",
+      "awsRegion": "ap-southeast-1",
+      "sourceIPAddress": "XXYZ",
+      "userAgent": "signin.amazonaws.com",
+      "requestParameters": {
+        "X-Amz-Date": "20191206T054930Z",
+        "bucketName": "XXYZ",
+        "X-Amz-Algorithm": "AWS4-HMAC-SHA256",
+        "x-amz-acl": "private",
+        "X-Amz-SignedHeaders": "content-md5;content-type;host;x-amz-acl;x-amz-storage-class",
+        "Host": "XXYZ.s3.ap-southeast-1.amazonaws.com",
+        "X-Amz-Expires": "300",
+        "key": "XXYZ.jpg",
+        "x-amz-storage-class": "STANDARD"
+      },
+      "responseElements": null,
+      "additionalEventData": {
+        "SignatureVersion": "SigV4",
+        "CipherSuite": "XXYZ",
+        "bytesTransferredIn": 141523,
+        "AuthenticationMethod": "QueryString",
+        "x-amz-id-2": "XXYZ/XXYZ",
+        "bytesTransferredOut": 0
+      },
+      "requestID": "XXYZ",
+      "eventID": "XXYZ",
+      "readOnly": false,
+      "resources": [
+        {
+          "type": "AWS::S3::Object",
+          "ARN": "arn:aws:s3:::XXYZ/XXYZ.jpg"
+        },
+        {
+          "accountId": "XXYZ",
+          "type": "AWS::S3::Bucket",
+          "ARN": "arn:aws:s3:::XXYZ"
+        }
+      ],
+      "eventType": "AwsApiCall",
+      "recipientAccountId": "XXYZ"
+    }
+  }
