@@ -1,6 +1,6 @@
 # Objective
 
-Build a state machine that is triggered when an image is uploaded to an S3 bucket. In response it should invoke two Lambda functions in parallel. These functions should be written in C#. The first Lambda function identifies objects in the image using the AWS Rekognition service and creates a record in a DynamoDB table with the name and the confidence of each identified object. The second Lambda function generates a thumbnail and uploads it to another S3 bucket.
+Build a state machine using AWS Step Functions that is triggered when an image is uploaded to an S3 bucket. In response the state machine should invoke two Lambda functions in parallel. These functions should be written in C#. The first Lambda function identifies objects in the image using the AWS Rekognition service and creates a record in a DynamoDB table with the name and the confidence of each identified object. The second Lambda function generates a thumbnail and uploads it to another S3 bucket.
 
 # Components
 
