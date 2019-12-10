@@ -5,15 +5,15 @@
         "Parallel State": {
             "Comment": "A Parallel state that will be used to call 2 Lambda functions.",
             "Type": "Parallel",
-            "End": "Wait",
+            "End": true,
             "Branches": [
                 {
                     "StartAt": "Rekognition",
                     "States": {
                         "Rekognition": {
                             "Type": "Task",
-                            "Resource": "arn:aws:lambda:ap-southeast-1:992916455630:function:rekognition",
-                            "End": "Wait"
+                            "Resource": "arn:aws:lambda:ap-southeast-1:XXYZ:function:rekognition",
+                            "End": true
                         }
                     }
                 },
@@ -22,17 +22,12 @@
                     "States": {
                         "Thumbnail": {
                             "Type": "Task",
-                            "Resource": "arn:aws:lambda:ap-southeast-1:992916455630:function:thumbnail",
-                            "End": "Wait"
+                            "Resource": "arn:aws:lambda:ap-southeast-1:XXYZ:function:thumbnail",
+                            "End": true
                         }
                     }
                 }
             ]
-        },
-        "Wait": {
-            "Type": "Wait",
-            "Seconds": 5,
-            "End": true    
-        }        
+        }
     }
 }
