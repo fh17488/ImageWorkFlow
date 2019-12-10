@@ -16,7 +16,8 @@ Build a state machine that is triggered when an image is uploaded to an S3 bucke
 
 ## State Machine
 
-The type of state machine is express. It calls the Lambda functions in parallel and exits. Figure 1 illustrates this state machine.
+The type of state machine is express. It calls the Lambda functions in parallel and exits. Figure 1 below illustrates this state machine.
+
 ![Image description](https://github.com/fh17488/stateMachineImageWorkFlow/blob/master/Figure1.png)
 
  ## CloudWatch Rule
