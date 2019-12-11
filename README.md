@@ -1,6 +1,6 @@
 # Objective
 
-Build a state machine using AWS Step Functions that is triggered when an image is uploaded to an S3 bucket. In response the state machine should invoke two Lambda functions in parallel. These functions should be written in C#. The first Lambda function identifies objects in the image using the AWS Rekognition service and creates a record in a DynamoDB table with the name and the confidence of each identified object. The second Lambda function generates a thumbnail and uploads it to another S3 bucket.
+Build a serverless application using AWS SAM in which a state machine, from AWS Step Functions, is triggered when an image is uploaded to an S3 bucket. In response the state machine should invoke two Lambda functions in parallel. These functions should be written in C#. The first Lambda function identifies objects in the image using the AWS Rekognition service and creates a record in a DynamoDB table with the name and the confidence of each identified object. The second Lambda function generates a thumbnail and uploads it to another S3 bucket.
 
 # Components
 
@@ -16,7 +16,7 @@ Build a state machine using AWS Step Functions that is triggered when an image i
 
 ## State Machine
 
-The type of state machine is express. It calls the Lambda functions in parallel and exits. Figure 1 below illustrates this state machine. The code for the State Machine is in the /src folder in the file 'state_machine.json'.
+The type of state machine is express. It calls the Lambda functions in parallel and exits. Figure 1 below illustrates this state machine. The code for the State Machine can be found in the SAM template.
 
 ![Image description](https://github.com/fh17488/stateMachineImageWorkFlow/blob/master/Figure1.png)
 
@@ -37,3 +37,9 @@ The IAM permissions associated with this function should include the ability to 
 A rule will be configured to trigger the state machine when an object is uploaded to the S3 bucket for images. However, for this the PutObject API must be logged by CloudTrail. To configure this rule follow the instructions at the URL: [https://docs.aws.amazon.com/step-functions/latest/dg/tutorial-cloudwatch-events-s3.html](https://docs.aws.amazon.com/step-functions/latest/dg/tutorial-cloudwatch-events-s3.html).
 
 The JSON object passed to the State Machine by the rule is given in the file &#39;event\_obfuscated.json&#39;. Some strings have been replaced by the token &#39;XXYZ&#39; for security.
+
+Note that this rule will have to be installed external to the SAM application.
+
+## Deployment
+
+Download the ImageWorkFlow folder. Install AWS SAM CLI. Execute 'sam build' and then 'sam deploy'. This will result in a CloudFormation stack that will create all components except for the CloudWatch Rule, the CloudTrail S3 bucket and the CloudTrail trail needed for the CloudWatch Rule.
