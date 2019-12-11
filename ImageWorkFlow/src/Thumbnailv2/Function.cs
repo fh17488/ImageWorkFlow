@@ -21,7 +21,7 @@ namespace Thumbnailv2
         /// <summary>
         /// The default table name used for the DynamoDB table.
         /// </summary>
-        public const String DEFAULT_TARGET_BUCKET = "thumbnailtarget3005";
+        public const String DEFAULT_TARGET_BUCKET = "rekognition3005";
 
         /// <summary>
         /// The name of the DynamoDB table configured for use with this function.
