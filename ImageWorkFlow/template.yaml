@@ -1,0 +1,160 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Sample SAM Template for ImageWorkFlow
+
+Globals:
+  Function:
+    Timeout: 15
+
+Parameters: 
+  SrcBucketName: 
+    Type: String
+    Default: rekognition3004
+    Description: Enter the name of the S3 bucket for images.
+  TargetBucketName: 
+    Type: String
+    Default: rekognition3005
+    Description: Enter the name of the S3 bucket for thumbnails.
+  DynamoDBTableName:
+    Type: String
+    Default: test_tbl
+    Description: Enter the name of the DynamoDBTable.
+  RekognitionFunctionName:
+    Type: String
+    Default: Rekognitionv2
+  ThumbnailFunctionName:
+    Type: String
+    Default: Thumbnailv2    
+
+Resources:
+  StatesExecutionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: "Allow"
+            Principal:
+              Service:
+                - !Sub states.${AWS::Region}.amazonaws.com
+            Action: "sts:AssumeRole"
+      Path: "/"
+      Policies:
+        - PolicyName: StatesExecutionPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "lambda:InvokeFunction"
+                Resource: "*"
+  SrcBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: 
+        Ref: SrcBucketName
+  TargetBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: 
+        Ref: TargetBucketName
+  DynamoDBTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: Id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      SSESpecification:
+        SSEEnabled: false
+      TableName: 
+        Ref: DynamoDBTableName
+  Rekognitionv2Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: 
+        Ref: RekognitionFunctionName
+      CodeUri: ./src/Rekognitionv2/
+      Handler: Rekognitionv2::Rekognitionv2.Function::FunctionHandler
+      Runtime: dotnetcore2.1
+      MemorySize: 1280
+      Environment:
+        Variables:
+          DynamoDBTableName:
+            Ref: DynamoDBTableName
+          MinConfidence: 90
+      Policies:
+        - S3ReadPolicy:
+            BucketName:
+              Ref: SrcBucketName      
+        - DynamoDBCrudPolicy:
+            TableName:
+              Ref: DynamoDBTableName
+        - RekognitionDetectOnlyPolicy: {}          
+  Thumbnailv2Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: 
+        Ref: ThumbnailFunctionName
+      CodeUri: ./src/Thumbnailv2/
+      Handler: Thumbnailv2::Thumbnailv2.Function::FunctionHandler
+      Runtime: dotnetcore2.1
+      MemorySize: 640
+      Policies:
+        - S3ReadPolicy:
+            BucketName:
+              Ref: SrcBucketName
+        - S3CrudPolicy:
+            BucketName:
+              Ref: TargetBucketName
+        - DynamoDBCrudPolicy:
+            TableName:
+              Ref: DynamoDBTableName       
+      Environment:
+        Variables:
+          TargetBucketName: 
+            Ref: TargetBucketName
+  ImageWorkFlowStateMachine:
+    Type: AWS::StepFunctions::StateMachine
+    Properties: 
+      DefinitionString: !Sub |-
+        {
+            "Comment": "A State Machine that executes 2 Lambda functions that are triggered when an image is uploaded to an S3 bucket",
+            "StartAt": "Parallel State",
+            "States": {
+                "Parallel State": {
+                    "Comment": "A Parallel state that will be used to call 2 Lambda functions.",
+                    "Type": "Parallel",
+                    "End": true,
+                    "Branches": [
+                        {
+                            "StartAt": "Rekognition",
+                            "States": {
+                                "Rekognition": {
+                                    "Type": "Task",
+                                    "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${RekognitionFunctionName}", 
+                                    "End": true
+                                }
+                            }
+                        },
+                        {
+                            "StartAt": "Thumbnail",
+                            "States": {
+                                "Thumbnail": {
+                                    "Type": "Task",
+                                    "Resource": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${ThumbnailFunctionName}",
+                                    "End": true
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+      RoleArn: !GetAtt [ StatesExecutionRole, Arn ]
+      StateMachineName: ImageWorkFlowStateMachine2
+      StateMachineType: EXPRESS
+ 
