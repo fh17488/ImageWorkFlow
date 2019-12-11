@@ -1,6 +1,6 @@
 # Objective
 
-Build a serverless application using AWS SAM with a state machine, from AWS Step Functions, that is triggered when an image is uploaded to an S3 bucket. In response the state machine should invoke two Lambda functions in parallel. These functions should be written in C#. The first Lambda function identifies objects in the image using the AWS Rekognition service and creates a record in a DynamoDB table with the name and the confidence of each identified object. The second Lambda function generates a thumbnail and uploads it to another S3 bucket.
+Build a serverless application using AWS SAM with a state machine, from AWS Step Functions, that is triggered when an image is uploaded to an S3 bucket. In response the state machine should invoke two Lambda functions in parallel. These functions should be written in C#. The first Lambda function should identify objects in the image using the AWS Rekognition service and create a record in a DynamoDB table with the name and confidence of each identified object. The second Lambda function should generate a thumbnail and uploads it to another S3 bucket.
 
 # Components
 
